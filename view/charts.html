@@ -1,0 +1,117 @@
+# -*- coding: utf-8 -*-
+
+<%inherit file="templates/base.html"/>
+
+<%block name="header">
+	<%include file="header.html"/>
+</%block>
+
+
+<%block name="content">
+
+	<!--Load the AJAX API-->
+    <script type="text/javascript" src="/static/googleAPI/jsapi.js"></script>
+    <script type="text/javascript">
+
+    	var reloadChart=function(){
+		  	//alert("hola");
+			// Create the data table.				
+	        var data = new google.visualization.DataTable();
+	        data.addColumn('string', 'Etiqueta');
+	        data.addColumn('number', 'Valor');
+	        data.addRows([
+	          [$("#fila1Id").val(), parseInt($("#n1Id").val())],
+	          [$("#fila2Id").val(), parseInt($("#n2Id").val())],
+	          [$("#fila3Id").val(), parseInt($("#n3Id").val())],
+	          [$("#fila4Id").val(), parseInt($("#n4Id").val())],
+	          [$("#fila5Id").val(), parseInt($("#n5Id").val())],
+	        ]);
+
+	        // Set chart options
+	        var options = {'title':$("#titleInputId").val(),
+	                       'width':500,
+	                       'height':400};
+
+	        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+	        var chart2 = new google.visualization.ColumnChart(document.getElementById('chart_div2'));
+	        var chart3 = new google.visualization.LineChart(document.getElementById('chart_div3'));
+
+	        chart.draw(data, options); 
+	        chart2.draw(data, options); 
+	        chart3.draw(data, options);              	
+		};
+
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1.0', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(reloadChart);
+
+      
+		$(document).ready(function() {
+			$(".formElement").blur(function() {
+				reloadChart();
+			});
+
+		});
+
+    </script>
+
+	<div class="content">	
+
+		<div class="col-md-3">
+			<%include file="asideMenu.html" args="current_section='charts' "/>
+		</div>
+
+		<div class="col-md-9">
+
+			% if msg:
+      			<p class="wrong">${msg}</p>
+      		% endif 
+
+      		<div class="container">
+	      		<div class="row">
+	      			<div class="col-md-4">
+	      				<form action="/charts" method="post" accept-charset="utf-8">
+							${formularioGrafica.render()}
+						</form>
+	      			</div>
+	      			<div class="col-md-8 chart-content">
+	      				<!-- Sectores circulares -->
+	      				<div class="panel panel-default">
+						  <div class="panel-heading">Sectores circulares</div>
+						  <div class="panel-body">
+						    <div id="chart_div"></div>
+						  </div>
+						</div>
+						<!-- Diagrama de columnas -->
+						<div class="panel panel-default">
+						  <div class="panel-heading">Diagrama de columnas</div>
+						  <div class="panel-body">
+						    <div id="chart_div2"></div>
+						  </div>
+						</div>
+						<!-- Diagrama de líneas -->
+						<div class="panel panel-default">
+						  <div class="panel-heading">Diagrama de líneas</div>
+						  <div class="panel-body">
+						    <div id="chart_div3"></div>
+						  </div>
+						</div>		      				
+	      			</div>
+	      		</div>      		  			
+      		</div>  	
+			
+		</div> <!-- col derecha -->
+
+		<script>
+			
+		</script>
+
+	</div> <!-- content -->
+</%block>
+
+
+<%block name="footer">
+	<%include file="footer.html"/>
+</%block>

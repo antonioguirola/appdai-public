@@ -1,0 +1,166 @@
+# -*- coding: utf-8 -*-
+
+<%inherit file="templates/base.html"/>
+
+<%block name="header">
+<%include file="header.html"/>
+</%block>
+
+
+<%block name="content">
+
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+<script type="text/javascript"
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfpvqNRGqLURlHm4-wQUCU1ZjDLFKh3R4&sensor=true">
+</script>
+
+<script type="text/javascript">
+
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
+var map;
+var etsiit;
+var pos;
+
+function initialize() {
+
+	directionsDisplay = new google.maps.DirectionsRenderer();
+
+
+
+	etsiit = new google.maps.LatLng(37.196510, -3.624604);
+
+	var mapOptions = {
+		center: new google.maps.LatLng(37.196510, -3.624604),
+		zoom: 14
+	};
+
+	map = new google.maps.Map(document.getElementById("map-canvas"),
+		mapOptions);
+	directionsDisplay.setMap(map);
+	var trafficLayer = new google.maps.TrafficLayer();
+	trafficLayer.setMap(map);
+
+	var etsiitImage = '/static/images/map-icon-computer.png';
+
+	var etsiit_marker=new google.maps.Marker({
+		position: etsiit,
+		map: map,
+		animation: google.maps.Animation.DROP,
+		title: "ESIIT",
+		icon:etsiitImage
+	});
+
+
+	// Try HTML5 geolocation
+	if(navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(position) {
+			pos = new google.maps.LatLng(position.coords.latitude,
+				position.coords.longitude);
+
+			var infowindow = new google.maps.InfoWindow({
+				map: map,
+				position: pos,
+				content: 'Este eres tú'
+			});
+
+			map.setCenter(pos);
+
+			var userImage = '/static/images/user-icon.png';
+
+			var user_marker=new google.maps.Marker({
+				position: pos,
+				map: map,
+				animation: google.maps.Animation.DROP,
+				title: "Tú",
+				icon:userImage
+			});
+
+			//calcRoute(pos);
+
+		}, function() {
+			handleNoGeolocation(true);
+		});
+	} else {
+			// Browser doesn't support Geolocation
+			handleNoGeolocation(false);
+		}
+
+}//initialize
+
+function handleNoGeolocation(errorFlag) {
+	if (errorFlag) {
+		var content = 'Error: The Geolocation service failed.';
+	} else {
+		var content = 'Error: Your browser doesn\'t support geolocation.';
+	}
+
+	var options = {
+		map: map,
+		position: etsiit,
+		content: content
+	};
+
+	var infowindow = new google.maps.InfoWindow(options);
+	map.setCenter(options.position);
+}
+
+function calcRoute(start) {
+	var start = start;
+	var end = etsiit;
+	var request = {
+		origin:start,
+		destination:end,
+		travelMode: google.maps.TravelMode.DRIVING
+	};
+	directionsService.route(request, function(response, status) {
+		if (status == google.maps.DirectionsStatus.OK) {
+			directionsDisplay.setDirections(response);
+		}
+	});
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+$(document).ready(function() {
+	$("#showRouteButton").click(function(event) {
+		calcRoute(pos);
+	});
+});
+
+
+</script>
+
+<div class="content">	
+
+<div class="col-md-3">
+<%include file="asideMenu.html" args="current_section='maps' "/>
+</div>
+
+<div class="col-md-9">
+
+% if msg:
+<p class="wrong">${msg}</p>
+% endif 
+
+<div class="container">
+	<div class="col-md-12">
+		<div id="map-canvas"/>      				
+		</div>
+		<br>
+		<!-- Botón -->
+		<button type="button" id="showRouteButton" class="btn btn-success">Por favor, llévame a la ETSIIT</button>
+	</div>      		  			
+</div>  	
+
+</div> <!-- col derecha -->
+
+
+</div> <!-- content -->
+</%block>
+
+
+<%block name="footer">
+<%include file="footer.html"/>
+</%block>

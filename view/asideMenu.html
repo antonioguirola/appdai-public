@@ -1,0 +1,36 @@
+##Necesario para poder pasarle los argumentos mediante un import
+##Uso: <%include file="asideMenu.html" args="current_section='rss'"/>
+<%page args="current_section"/>
+
+<%def name="checkActive(section)">
+    % if current_section==section:
+    	active
+    % endif
+</%def>
+
+<div class="list-group">
+	<a href="/" class="list-group-item ${checkActive('index')}">Inicio</a>
+	<a href="/signup" class="list-group-item ${checkActive('formulario_inscripcion')}">Formulario de inscripción</a>
+	<a href="/rss" class="list-group-item ${checkActive('rss')}">RSS</a>
+	<a href="/charts" class="list-group-item ${checkActive('charts')}">Gráficas</a>
+	<a href="/maps" class="list-group-item ${checkActive('maps')}">Mapa</a>
+	<a href="/twitter" class="list-group-item ${checkActive('twitter')}">Twitter</a>
+	%if sesion:
+		<a href="/user_data" class="list-group-item ${checkActive('datos_usuario')}">Datos del usuario</a>
+	% endif
+</div>
+			
+<!-- HISTORIAL -->
+% if sesion:
+	<div class="btn-group">
+	  <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Historial <span class="caret"></span>
+	  </button>
+	  <ul class="dropdown-menu">
+	  	% for page in historial:
+	  		% if page!=['','']:
+	    		<li><a href=${page[0]}>${page[1]}</a></li>
+	    	% endif
+	    % endfor
+	  </ul>
+	</div>
+% endif	

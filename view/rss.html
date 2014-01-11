@@ -1,0 +1,69 @@
+# -*- coding: utf-8 -*-
+
+<%inherit file="templates/base.html"/>
+
+<%block name="header">
+	<%include file="header.html"/>
+</%block>
+
+
+<%block name="content">
+	<div class="content">	
+
+		<div class="col-md-3">
+			<%include file="asideMenu.html" args="current_section='rss'"/>
+		</div>
+
+		<div class="col-md-9">
+
+			% if msg:
+      			<p class="wrong">${msg}</p>
+      		% endif
+      		
+      		<h1>Noticias extraidas de la secci&oacuten RSS de ciencia del peri&oacutedico <a href="http://www.elpais.com/">El Pa&iacutes</a></h1>
+
+			% for i in range(0,len(RSSFile)):
+				<%
+					item = RSSFile[i]
+				%>
+				% if 'titulo' in item.keys():
+					<div class="panel panel-danger">
+						## Título:
+						<div class="panel-heading">
+							<h3 class="panel-title">${item['titulo']}</h3>
+						</div>					
+						
+						## Autor:
+						% if 'autor' in item.keys():
+							<p>Por: ${item['autor']}</p>
+						% endif
+						
+						## Miniatura:
+						% if 'imagen' in item.keys():
+							<img clas="pull-left" src="${item['imagen']}" alt="Miniatura">
+						% endif
+						
+						## Contenido:
+						% if 'contenido' in item.keys():
+							${item['contenido']}
+						% endif
+
+						## Enlace:
+						% if 'enlace' in item.keys():
+							<a href="${item['enlace']}">Ir a noticia</a>
+						% endif
+
+					</div>
+				% endif
+
+			% endfor
+			
+		</div>
+
+	</div>
+</%block>
+
+
+<%block name="footer">
+	<%include file="footer.html"/>
+</%block>

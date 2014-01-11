@@ -1,0 +1,66 @@
+
+html,body {
+	padding-top: 60px;
+	height: 100%;
+}
+
+#barraSuperior{
+	background-color: darkred;
+}
+
+/* Empujamos el footer al fondo de la página */
+.content {
+	clear: both;
+	/*min-height: 100%;
+	height: auto;*/
+	height: 1000px;
+	/* Indentación negativa igual a la altura del footer */
+	margin: 0 auto -50px;
+	/* Pad bottom by footer height */
+	padding: 0 0 60px;
+}
+
+/* Fijo el tamaño para el footer */
+.footer {
+	height: 50px;
+	background-color: darkred;
+	padding-top: 15px;
+}
+
+/*Cambio los colores a rojo*/
+a.list-group-item.active, a.list-group-item.active:hover{
+	background-color: #660000;
+}
+
+/*Dejo más margen entre los campos del formulario*/
+.form-control{
+	margin: 3px 0;
+}
+
+/*Mensajes de error de la validación de formularios*/
+.wrong{
+	color: red;
+	font-family:"Futura";
+}
+
+.navbar-form.navbar-right, .navbar-right{
+	color: white;
+}
+
+.chart-content{
+	height: 3000px;
+}
+
+#map-canvas{
+	height: 650px;
+	width: 850px;
+}
+
+.tweet-author{
+	color: darkred;
+}
+
+#map-twitter{
+	height: 400px;
+	width: 550px;
+}

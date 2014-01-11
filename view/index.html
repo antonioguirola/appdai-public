@@ -1,0 +1,39 @@
+# -*- coding: utf-8 -*-
+
+<%inherit file="templates/base.html"/>
+
+<%block name="header">
+	<%include file="header.html"/>
+</%block>
+
+
+<%block name="content">
+	<div class="content">	
+
+		<div class="col-md-3">
+
+			<%include file="asideMenu.html" args="current_section='index'"/>
+
+		</div>
+
+		<div class="col-md-4">
+
+			% if msg:
+      			<p class="wrong">${msg}</p>
+      		% endif
+      		
+			<p>${texto}</p>
+
+			% if sesion:
+				${sesion}
+			% endif
+
+		</div>
+
+	</div>
+</%block>
+
+
+<%block name="footer">
+	<%include file="footer.html"/>
+</%block>

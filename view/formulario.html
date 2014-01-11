@@ -1,0 +1,54 @@
+## -*- coding: utf-8 -*-
+
+<%inherit file="templates/base.html"/>
+
+<%block name="header">
+	<%include file="header.html"/>
+</%block>
+
+
+<%block name="content">
+	<div class="content">	
+
+		<!-- Menú -->
+		<div class="col-md-3">
+
+			<%include file="asideMenu.html" args="current_section='formulario_inscripcion'"/>
+
+		</div>
+
+
+		<!-- Contenido -->
+		<div class="col-md-8">
+
+			% if passed==False:			
+				<div class="alert alert-danger fade in">
+	        		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+	        		<strong>Error, formulario no válido</strong>
+      			</div>
+      		% elif passed==True:
+      			<div class="alert alert-success fade in">
+	        		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+	        		<strong>Datos introducidos correctamente</strong>
+      			</div>
+      		% endif
+
+      		% if msg:
+      			<p class="wrong">${msg}</p>
+      		% endif
+
+			<h3>Formulario de inscricpión</h3>
+
+			<form action="/signup" method="post" accept-charset="utf-8">
+				${form.render()}
+				<button type="submit" class="btn btn-success">Registrarse</button>
+			</form>
+		</div>
+
+	</div>
+</%block>
+
+
+<%block name="footer">
+	<%include file="footer.html"/>
+</%block>

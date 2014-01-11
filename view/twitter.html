@@ -1,0 +1,169 @@
+# -*- coding: utf-8 -*-
+
+<%inherit file="templates/base.html"/>
+
+<%block name="header">
+<%include file="header.html"/>
+</%block>
+
+
+<%block name="content">
+
+<!-- MAPA -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script type="text/javascript"
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfpvqNRGqLURlHm4-wQUCU1ZjDLFKh3R4&sensor=true">
+</script>
+<script type="text/javascript">
+	var map;
+	var markers=[];
+	function initialize() {
+
+		var mapOptions = {
+			center: new google.maps.LatLng(37.196510, -3.624604),
+			zoom: 2
+		};
+		map = new google.maps.Map(document.getElementById("map-twitter"),
+			mapOptions);
+
+		addTweetsMarkers();
+	}//initialize
+
+	google.maps.event.addDomListener(window, 'load', initialize);
+
+	function addTweetsMarkers(){
+		% if coordList:
+			var coordList=${coordList};
+			//debugger;
+
+			var twitterIcon = '/static/images/twitter-icon.png';
+
+			for (var i = coordList.length - 1; i >= 0; i--) {
+				tweetCoords = coordList[i];
+				loc = new google.maps.LatLng(tweetCoords[1],tweetCoords[0]);
+				marker = new google.maps.Marker({
+					position: loc,
+					map: map,
+					icon: twitterIcon
+				});
+			};
+		% endif
+		}
+</script>
+
+<!-- GRÁFICA -->
+<script type="text/javascript" src="/static/googleAPI/jsapi.js"></script>
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["corechart"]});
+  google.setOnLoadCallback(drawChart);
+  function drawChart() {
+    var data = google.visualization.arrayToDataTable([
+      ['Autor', 'Nº de tweets',{ role: 'style' }],
+      % for i in range(0,4):
+      	<%
+      		autor=users[i]
+
+      		#generar un color aleatorio
+      		import random
+      		r = lambda: random.randint(0,255)
+      		color='#%02X%02X%02X' % (r(),r(),r())
+      	%>
+      	['${autor[0]}', ${autor[1]}, '${color}'],
+      % endfor
+    ]);
+
+    var options = {
+      legend: {position: 'none'},
+      hAxis: {title: 'Autor', titleTextStyle: {color: 'red'}},
+      vAxis: {title: 'Nº de tweets', titleTextStyle: {color: 'red'}},
+      'width':600,
+	  'height':400
+    };
+
+    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+  }
+</script>
+
+<div class="content">	
+
+<div class="col-md-3">
+	<%include file="asideMenu.html" args="current_section='twitter' "/>
+</div>
+
+<div class="col-md-9">
+
+	% if msg:
+	<p class="wrong">${msg}</p>
+	% endif 
+
+	<!-- Bototones de Twitter -->
+	<a href="https://twitter.com/share" class="twitter-share-button" data-lang="es" data-size="large" data-hashtags="p4DAI">Twittear</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+	<a href="https://twitter.com/aguirola9" class="twitter-follow-button" data-show-count="false" data-lang="es" data-size="large">Seguir a @aguirola9</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>	
+
+	<br><br>
+
+	<!-- BUSCADOR -->	
+	<form action="/twitter" method="post" accept-charset="utf-8">
+		<div class="form-group">
+		    <label for="queryField">¿Qué quieres buscar?</label>
+		    <input type="search" class="form-control" id="queryFieldID" name="queryField" >
+		    <button type="submit" id="searchButton" class="btn btn-success">¡¡Busca en Twitter!!</button>
+		  </div>
+	</form>
+
+	<div class="row">
+		
+		<div class="col-md-6">
+		<!-- TWEETS -->
+		% if tweetsSet:
+			<br><h3>Timeline propio o Resultados de la búsqueda:</h3><br>
+
+			<div class="list-group">
+			    % for i in range(0,len(tweetsSet)):
+			    	<%
+			    		tweet=tweetsSet[i]
+			    	%>			    	
+			    	% if i<20:
+			    		<!-- SOLO SE MUESTRAN LOS 20 PRIMEROS -->
+				    	<div class="list-group-item">
+				    		<h4 class="list-group-item-heading">${tweet['texto']}</h4>
+				    		<p class="tweet-author">Autor: ${tweet['autor']}</p>
+				    		<p>${tweet['fecha']}</p>
+				    	</div>
+				    % endif			  
+	    		% endfor
+			</div>		
+		% endif
+		</div><!-- columna de resultados -->
+
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">Mapa de tweets</div>
+				<div class="panel-body">
+					<div id="map-twitter"></div>
+				</div>
+			</div><!-- panel del mapa -->
+
+			<div class="panel panel-default">
+				<div class="panel-heading">Usuarios más activos recientemente</div>
+				<div class="panel-body">
+					<div id="chart_div"></div>
+				</div>
+			</div><!-- panel del mapa -->
+		</div><!-- columna de mapa y gráfica -->
+
+	</div><!-- row -->
+
+</div> <!-- col derecha -->
+
+
+</div> <!-- content -->
+</%block>
+
+
+<%block name="footer">
+<%include file="footer.html"/>
+</%block>
